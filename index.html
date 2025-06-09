@@ -3,18 +3,417 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>React Tab Navigation</title>
+    <title>React Hair Shop Navigation</title>
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+        #root {
+            width: 100%;
+            height: 100vh;
+        }
+    </style>
 </head>
 <body>
-    <div id="root"></div>
+    <div id="root">로딩 중...</div>
     
     <script type="text/babel">
-        // 여기에 우리가 만든 TabApp 컴포넌트 코드를 그대로 붙여넣기
-        // (우리 artifact의 전체 코드)
-        
+        const { useState, useEffect } = React;
+
+        // 아이콘 컴포넌트들
+        const FileText = ({ size = 24 }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/>
+                <polyline points="14,2 14,8 20,8"/>
+                <line x1="16" y1="13" x2="8" y2="13"/>
+                <line x1="16" y1="17" x2="8" y2="17"/>
+                <line x1="10" y1="9" x2="8" y2="9"/>
+            </svg>
+        );
+
+        const Scissors = ({ size = 24 }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="6" cy="6" r="3"/>
+                <circle cx="6" cy="18" r="3"/>
+                <line x1="20" y1="4" x2="8.12" y2="15.88"/>
+                <line x1="14.47" y1="14.48" x2="20" y2="20"/>
+                <line x1="8.12" y1="8.12" x2="12" y2="12"/>
+            </svg>
+        );
+
+        const Users = ({ size = 24 }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                <circle cx="9" cy="7" r="4"/>
+                <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+        );
+
+        const BarChart3 = ({ size = 24 }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M3 3v18h18"/>
+                <path d="m19 9-5 5-4-4-3 3"/>
+            </svg>
+        );
+
+        const Settings = ({ size = 24 }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/>
+                <circle cx="12" cy="12" r="3"/>
+            </svg>
+        );
+
+        const Menu = ({ size = 24 }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="4" y1="6" x2="20" y2="6"/>
+                <line x1="4" y1="12" x2="20" y2="12"/>
+                <line x1="4" y1="18" x2="20" y2="18"/>
+            </svg>
+        );
+
+        const TabApp = () => {
+            const [activeTab, setActiveTab] = useState(0);
+            const [isDesktop, setIsDesktop] = useState(false);
+            const [sidebarExpanded, setSidebarExpanded] = useState(true);
+            const [slidePages, setSlidePages] = useState([0]);
+            const [slidePosition, setSlidePosition] = useState(0);
+            const [isTransitioning, setIsTransitioning] = useState(false);
+
+            const tabs = [
+                { id: 0, name: '전체내역', icon: FileText },
+                { id: 1, name: '시술표', icon: Scissors },
+                { id: 2, name: '고객시술', icon: Users },
+                { id: 3, name: '매출현황', icon: BarChart3 },
+                { id: 4, name: '설정', icon: Settings }
+            ];
+
+            // 반응형 레이아웃 감지
+            useEffect(() => {
+                const checkScreenSize = () => {
+                    setIsDesktop(window.innerWidth >= 1200);
+                };
+
+                checkScreenSize();
+                window.addEventListener('resize', checkScreenSize);
+                return () => window.removeEventListener('resize', checkScreenSize);
+            }, []);
+
+            const handleTabClick = (tabId) => {
+                if (!isDesktop && (isTransitioning || activeTab === tabId)) return;
+                if (isDesktop && activeTab === tabId) return;
+                
+                setActiveTab(tabId);
+                
+                // 모바일에서만 슬라이드 애니메이션
+                if (!isDesktop) {
+                    const currentTab = activeTab;
+                    const targetTab = tabId;
+                    
+                    if (targetTab > currentTab) {
+                        // 오른쪽으로 이동
+                        setSlidePages([currentTab, targetTab]);
+                        setSlidePosition(0);
+                        setIsTransitioning(false);
+                        setTimeout(() => {
+                            setIsTransitioning(true);
+                            setSlidePosition(1);
+                        }, 10);
+                    } else {
+                        // 왼쪽으로 이동
+                        setSlidePages([targetTab, currentTab]);
+                        setSlidePosition(1);
+                        setIsTransitioning(false);
+                        setTimeout(() => {
+                            setIsTransitioning(true);
+                            setSlidePosition(0);
+                        }, 10);
+                    }
+                }
+            };
+
+            const toggleSidebar = () => {
+                setSidebarExpanded(!sidebarExpanded);
+            };
+
+            // PC 버전 (사이드바 레이아웃)
+            if (isDesktop) {
+                return (
+                    <div style={{ 
+                        display: 'flex', 
+                        height: '100vh', 
+                        backgroundColor: 'white',
+                        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+                    }}>
+                        {/* 사이드바 */}
+                        <div style={{
+                            width: sidebarExpanded ? '240px' : '72px',
+                            backgroundColor: '#f8f9fa',
+                            borderRight: '1px solid #e5e7eb',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            transition: 'width 0.2s ease',
+                            overflow: 'hidden'
+                        }}>
+                            {/* 햄버거 버튼 */}
+                            <div style={{ padding: '12px 24px', margin: '2px 0' }}>
+                                <button
+                                    onClick={toggleSidebar}
+                                    style={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        width: '20px',
+                                        height: '20px',
+                                        backgroundColor: 'transparent',
+                                        border: 'none',
+                                        color: '#6b7280',
+                                        cursor: 'pointer',
+                                        transition: 'background-color 0.2s',
+                                        padding: 0,
+                                        outline: 'none'
+                                    }}
+                                    onMouseEnter={(e) => e.target.style.backgroundColor = '#f3f4f6'}
+                                    onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}
+                                >
+                                    <Menu size={20} />
+                                </button>
+                            </div>
+
+                            {/* 네비게이션 메뉴 */}
+                            <div style={{ padding: '8px 0' }}>
+                                {tabs.map((tab) => {
+                                    const IconComponent = tab.icon;
+                                    const isActive = activeTab === tab.id;
+                                    
+                                    return (
+                                        <button
+                                            key={tab.id}
+                                            onClick={() => handleTabClick(tab.id)}
+                                            style={{
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                padding: '12px 24px',
+                                                margin: '2px 0',
+                                                borderRadius: '8px',
+                                                backgroundColor: isActive ? '#e8f4fd' : 'transparent',
+                                                color: isActive ? '#1565c0' : '#6b7280',
+                                                border: 'none',
+                                                cursor: 'pointer',
+                                                fontSize: '14px',
+                                                fontWeight: isActive ? '600' : '500',
+                                                transition: 'background-color 0.2s ease, color 0.2s ease',
+                                                textAlign: 'left',
+                                                width: '100%',
+                                                outline: 'none',
+                                                userSelect: 'none'
+                                            }}
+                                            onMouseEnter={(e) => {
+                                                if (!isActive) {
+                                                    e.target.style.backgroundColor = '#f3f4f6';
+                                                }
+                                            }}
+                                            onMouseLeave={(e) => {
+                                                if (!isActive) {
+                                                    e.target.style.backgroundColor = 'transparent';
+                                                }
+                                            }}
+                                        >
+                                            <div style={{ marginRight: sidebarExpanded ? '20px' : '0' }}>
+                                                <IconComponent size={20} />
+                                            </div>
+                                            {sidebarExpanded && (
+                                                <span style={{
+                                                    opacity: sidebarExpanded ? 1 : 0,
+                                                    transition: 'opacity 0.1s ease 0.15s',
+                                                    whiteSpace: 'nowrap'
+                                                }}>
+                                                    {tab.name}
+                                                </span>
+                                            )}
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                        </div>
+
+                        {/* 메인 콘텐츠 */}
+                        <div style={{ 
+                            flex: 1, 
+                            display: 'flex', 
+                            alignItems: 'center', 
+                            justifyContent: 'center',
+                            backgroundColor: '#f9fafb'
+                        }}>
+                            <div style={{ textAlign: 'center' }}>
+                                <div style={{ 
+                                    fontSize: '8rem', 
+                                    fontWeight: 'bold', 
+                                    color: '#3b82f6', 
+                                    marginBottom: '1.5rem',
+                                    lineHeight: 1
+                                }}>
+                                    {activeTab + 1}
+                                </div>
+                                <h2 style={{ 
+                                    fontSize: '1.875rem', 
+                                    fontWeight: '600', 
+                                    color: '#1f2937', 
+                                    margin: '0 0 1rem 0'
+                                }}>
+                                    {tabs[activeTab].name}
+                                </h2>
+                                <p style={{ 
+                                    fontSize: '1.125rem', 
+                                    color: '#6b7280',
+                                    margin: 0
+                                }}>
+                                    {tabs[activeTab].name} 페이지입니다
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                );
+            }
+
+            // 모바일 버전 (하단 탭 레이아웃)
+            return (
+                <div style={{ 
+                    display: 'flex', 
+                    flexDirection: 'column', 
+                    height: '100vh', 
+                    backgroundColor: 'white',
+                    fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+                }}>
+                    {/* 메인 콘텐츠 */}
+                    <div style={{ 
+                        flex: 1, 
+                        position: 'relative', 
+                        overflow: 'hidden' 
+                    }}>
+                        <div 
+                            style={{ 
+                                display: 'flex',
+                                height: '100%',
+                                transition: isTransitioning ? 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)' : 'none',
+                                transform: `translateX(-${slidePosition * 50}%)`,
+                                width: '200%',
+                                willChange: isTransitioning ? 'transform' : 'auto'
+                            }}
+                            onTransitionEnd={() => {
+                                setIsTransitioning(false);
+                                setSlidePages([activeTab]);
+                                setSlidePosition(0);
+                            }}
+                        >
+                            {slidePages.map((pageId, index) => (
+                                <div 
+                                    key={`page-${pageId}-${index}`}
+                                    style={{
+                                        width: '50%',
+                                        flexShrink: 0,
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        backgroundColor: '#f9fafb'
+                                    }}
+                                >
+                                    <div style={{ textAlign: 'center' }}>
+                                        <div style={{ 
+                                            fontSize: '8rem', 
+                                            fontWeight: 'bold', 
+                                            color: '#3b82f6', 
+                                            marginBottom: '1.5rem',
+                                            lineHeight: 1
+                                        }}>
+                                            {pageId + 1}
+                                        </div>
+                                        <h2 style={{ 
+                                            fontSize: '1.875rem', 
+                                            fontWeight: '600', 
+                                            color: '#1f2937', 
+                                            margin: '0 0 1rem 0'
+                                        }}>
+                                            {tabs[pageId].name}
+                                        </h2>
+                                        <p style={{ 
+                                            fontSize: '1.125rem', 
+                                            color: '#6b7280',
+                                            margin: 0
+                                        }}>
+                                            {tabs[pageId].name} 페이지입니다
+                                        </p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                    
+                    {/* 하단 네비게이션 */}
+                    <div style={{ 
+                        backgroundColor: 'white', 
+                        position: 'relative' 
+                    }}>
+                        {/* 상단 파란색 인디케이터 */}
+                        <div 
+                            style={{
+                                position: 'absolute',
+                                top: 0,
+                                height: '2px',
+                                backgroundColor: '#3b82f6',
+                                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                                width: '12%',
+                                left: `${activeTab * 20 + 4}%`
+                            }}
+                        />
+                        
+                        <div style={{ 
+                            display: 'flex', 
+                            borderTop: '1px solid #f3f4f6' 
+                        }}>
+                            {tabs.map((tab) => {
+                                const IconComponent = tab.icon;
+                                const isActive = activeTab === tab.id;
+                                
+                                return (
+                                    <button
+                                        key={tab.id}
+                                        onClick={() => handleTabClick(tab.id)}
+                                        style={{
+                                            flex: 1,
+                                            display: 'flex',
+                                            flexDirection: 'column',
+                                            alignItems: 'center',
+                                            padding: '12px 8px',
+                                            transition: 'color 0.2s',
+                                            color: isActive ? '#3b82f6' : '#9ca3af',
+                                            backgroundColor: 'transparent',
+                                            border: 'none',
+                                            cursor: 'pointer'
+                                        }}
+                                    >
+                                        <IconComponent size={24} style={{ marginBottom: '4px' }} />
+                                        <span style={{ 
+                                            fontSize: '12px', 
+                                            fontWeight: '500' 
+                                        }}>
+                                            {tab.name}
+                                        </span>
+                                    </button>
+                                );
+                            })}
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        // 앱 렌더링
         const root = ReactDOM.createRoot(document.getElementById('root'));
         root.render(<TabApp />);
     </script>
