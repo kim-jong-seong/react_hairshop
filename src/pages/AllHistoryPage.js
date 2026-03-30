@@ -324,7 +324,7 @@ const ServiceSelectItem = ({ svc, selected, onSelect }) => (
 );
 
 // ── 메인 컴포넌트 ─────────────────────────────────────────────
-const AllHistoryPage = ({ externalFilter }) => {
+const AllHistoryPage = ({ externalFilter, isActive }) => {
   const [history, setHistory] = useState([]);
   const [services, setServices] = useState([]);
   const [customers, setCustomers] = useState([]);
@@ -501,15 +501,15 @@ const AllHistoryPage = ({ externalFilter }) => {
       </div>
 
       {/* 금액 숨김 FAB */}
-      <button onClick={toggleHideAmount} style={{ position: 'absolute', bottom: '148px', right: '20px', width: '52px', height: '52px', backgroundColor: hideAmount ? COLORS.primary : COLORS.gray400, borderRadius: '50%', boxShadow: '0 2px 12px rgba(59,130,246,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: 'none', cursor: 'pointer', zIndex: 10, color: COLORS.white, opacity: 0.75 }}>
+      <button onClick={toggleHideAmount} style={{ position: 'absolute', bottom: '148px', right: '20px', width: '52px', height: '52px', backgroundColor: hideAmount ? COLORS.primary : COLORS.gray400, borderRadius: '50%', boxShadow: '0 2px 12px rgba(59,130,246,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: 'none', cursor: 'pointer', zIndex: 10, color: COLORS.white, opacity: isActive ? 0.75 : 0, transition: 'opacity 0.3s ease 0.15s', pointerEvents: isActive ? 'auto' : 'none' }}>
         {hideAmount ? <Eye size={22} /> : <EyeOff size={22} />}
       </button>
       {/* 추가 FAB */}
-      <button onClick={() => setIsAddOpen(true)} style={{ position: 'absolute', bottom: '84px', right: '20px', width: '52px', height: '52px', backgroundColor: COLORS.primary, borderRadius: '50%', boxShadow: '0 2px 12px rgba(59,130,246,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: 'none', cursor: 'pointer', zIndex: 10, color: COLORS.white, opacity: 0.75 }}>
+      <button onClick={() => setIsAddOpen(true)} style={{ position: 'absolute', bottom: '84px', right: '20px', width: '52px', height: '52px', backgroundColor: COLORS.primary, borderRadius: '50%', boxShadow: '0 2px 12px rgba(59,130,246,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: 'none', cursor: 'pointer', zIndex: 10, color: COLORS.white, opacity: isActive ? 0.75 : 0, transition: 'opacity 0.3s ease 0.15s', pointerEvents: isActive ? 'auto' : 'none' }}>
         <Plus size={22} />
       </button>
       {/* 검색 FAB */}
-      <button onClick={() => setIsSearchOpen(true)} style={{ position: 'absolute', bottom: '20px', right: '20px', width: '52px', height: '52px', backgroundColor: COLORS.primary, borderRadius: '50%', boxShadow: '0 2px 12px rgba(59,130,246,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: 'none', cursor: 'pointer', zIndex: 10, color: COLORS.white, opacity: 0.75 }}>
+      <button onClick={() => setIsSearchOpen(true)} style={{ position: 'absolute', bottom: '20px', right: '20px', width: '52px', height: '52px', backgroundColor: COLORS.primary, borderRadius: '50%', boxShadow: '0 2px 12px rgba(59,130,246,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: 'none', cursor: 'pointer', zIndex: 10, color: COLORS.white, opacity: isActive ? 0.75 : 0, transition: 'opacity 0.3s ease 0.15s', pointerEvents: isActive ? 'auto' : 'none' }}>
         <Search size={22} />
       </button>
 

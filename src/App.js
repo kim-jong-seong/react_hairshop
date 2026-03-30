@@ -27,7 +27,7 @@ const TabApp = ({ isAdmin, onLogout }) => {
   const [historyFilter, setHistoryFilter] = useState(null);
 
   const getPageProps = (id) => {
-    if (id === 0) return { externalFilter: historyFilter };
+    if (id === 0) return { externalFilter: historyFilter, isActive: activeTab === 0 };
     if (id === 3) return { onNavigateToHistory: (f) => { setHistoryFilter(f); setActiveTab(0); } };
     if (id === 4) return { isAdmin, onLogout };
     return {};
