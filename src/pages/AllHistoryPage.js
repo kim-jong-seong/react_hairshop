@@ -218,7 +218,7 @@ const EditSheet = ({ open, onClose, record, onSave, onDelete, services }) => {
         <div>
           <Label text="고객" />
           <div style={{ padding: '11px 14px', border: `1px solid ${COLORS.gray200}`, borderRadius: '10px', backgroundColor: COLORS.gray50, display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span style={{ fontSize: '15px', fontWeight: '500', color: COLORS.gray900 }}>{record.customer_name}</span>
+            <span onClick={() => { if (!record.phone) { alert('등록된 전화번호가 없습니다.'); return; } if (window.confirm(`${record.customer_name}(${record.phone})님에게 전화하시겠습니까?`)) window.location.href = `tel:${record.phone}`; }} style={{ fontSize: '15px', fontWeight: '500', color: COLORS.gray900, cursor: 'pointer' }}>{record.customer_name}</span>
             {record.gender && <span style={{ fontSize: '13px', color: COLORS.gray400 }}>{record.gender}</span>}
           </div>
         </div>
