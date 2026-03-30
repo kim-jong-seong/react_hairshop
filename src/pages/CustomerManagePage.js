@@ -270,6 +270,7 @@ const DetailSheet = ({ open, customer, onClose, onEdit, onDelete }) => {
       return () => clearTimeout(t);
     } else {
       setSheetReady(false);
+      setHistory([]);
     }
   }, [open]);
 
@@ -360,11 +361,11 @@ const DetailSheet = ({ open, customer, onClose, onEdit, onDelete }) => {
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderBottom: `1px solid ${COLORS.gray100}` }}>
               <div style={{ padding: '14px 20px', borderRight: `1px solid ${COLORS.gray100}` }}>
                 <div style={{ fontSize: '12px', color: COLORS.gray400, fontWeight: '500', marginBottom: '4px' }}>총 방문</div>
-                <div style={{ fontSize: '20px', fontWeight: '700', color: COLORS.gray900 }}>{history.length}<span style={{ fontSize: '13px', fontWeight: '500', color: COLORS.gray500, marginLeft: '2px' }}>회</span></div>
+                <div style={{ fontSize: '20px', fontWeight: '700', color: COLORS.gray900 }}>{histLoading ? '-' : history.length}<span style={{ fontSize: '13px', fontWeight: '500', color: COLORS.gray500, marginLeft: '2px' }}>회</span></div>
               </div>
               <div style={{ padding: '14px 20px' }}>
                 <div style={{ fontSize: '12px', color: COLORS.gray400, fontWeight: '500', marginBottom: '4px' }}>누적 금액</div>
-                <div style={{ fontSize: '18px', fontWeight: '700', color: COLORS.gray900 }}>{totalAmount.toLocaleString()}<span style={{ fontSize: '12px', fontWeight: '500', color: COLORS.gray500, marginLeft: '2px' }}>원</span></div>
+                <div style={{ fontSize: '18px', fontWeight: '700', color: COLORS.gray900 }}>{histLoading ? '-' : totalAmount.toLocaleString()}<span style={{ fontSize: '12px', fontWeight: '500', color: COLORS.gray500, marginLeft: '2px' }}>원</span></div>
               </div>
             </div>
 
