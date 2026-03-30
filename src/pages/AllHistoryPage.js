@@ -472,7 +472,7 @@ const AllHistoryPage = ({ externalFilter }) => {
                     {!hideAmount && <span style={{ fontSize: '17px', fontWeight: '600', color: COLORS.gray900, letterSpacing: '-0.02em' }}>{(t.amount || 0).toLocaleString()}원</span>}
                   </IconRow>
                   <IconRow icon={<User size={14} />}>
-                    <span style={{ fontSize: '14px', fontWeight: '500', color: COLORS.gray900 }}>{t.customer_name}</span>
+                    <span onClick={(e) => { e.stopPropagation(); if (!t.phone) { alert('등록된 전화번호가 없습니다.'); return; } if (window.confirm(`${t.customer_name}(${t.phone})님에게 전화하시겠습니까?`)) window.location.href = `tel:${t.phone}`; }} style={{ fontSize: '14px', fontWeight: '500', color: COLORS.gray900, cursor: 'pointer' }}>{t.customer_name}</span>
                     {t.gender && <span style={{ fontSize: '13px', color: COLORS.gray400, marginLeft: '6px' }}>{t.gender}</span>}
                   </IconRow>
                   <IconRow icon={<Scissors size={14} />}>
