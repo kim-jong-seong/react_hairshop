@@ -386,7 +386,7 @@ const DetailSheet = ({ open, customer, onClose, onEdit, onDelete }) => {
                       <Scissors size={13} />
                       <span style={{ fontSize: '14px', color: COLORS.gray700 }}>{h.service_name}</span>
                     </div>
-                    {h.memo && <div style={{ marginTop: '4px', fontSize: '13px', color: COLORS.gray500, paddingLeft: '19px' }}>{h.memo}</div>}
+                    {h.memo && <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '4px', color: COLORS.gray400 }}><Memo size={13} /><span style={{ fontSize: '13px', color: COLORS.gray500 }}>{h.memo}</span></div>}
                   </div>
                 );
               })
