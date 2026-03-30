@@ -416,7 +416,7 @@ const DetailSheet = ({ open, customer, onClose, onEdit, onDelete }) => {
 };
 
 // ── 메인 ─────────────────────────────────────────────────────
-const CustomerManagePage = () => {
+const CustomerManagePage = ({ isActive }) => {
   const [customers, setCustomers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -508,7 +508,7 @@ const CustomerManagePage = () => {
         <div style={{ height: '80px' }} />
       </div>
 
-      <button onClick={() => setIsAddOpen(true)} style={{ position: 'absolute', bottom: '20px', right: '20px', width: '52px', height: '52px', backgroundColor: COLORS.primary, borderRadius: '50%', boxShadow: '0 2px 12px rgba(59,130,246,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: 'none', cursor: 'pointer', zIndex: 10, color: COLORS.white, opacity: 0.75 }}>
+      <button onClick={() => setIsAddOpen(true)} style={{ position: 'absolute', bottom: '20px', right: '20px', width: '52px', height: '52px', backgroundColor: COLORS.primary, borderRadius: '50%', boxShadow: '0 2px 12px rgba(59,130,246,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: 'none', cursor: 'pointer', zIndex: 10, color: COLORS.white, opacity: isActive ? 0.75 : 0, transition: 'opacity 0.3s ease 0.15s', pointerEvents: isActive ? 'auto' : 'none' }}>
         <Plus size={22} />
       </button>
 
