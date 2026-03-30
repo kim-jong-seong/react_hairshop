@@ -187,7 +187,7 @@ const SqlSheet = ({ open, onClose }) => {
   );
 };
 
-const SettingsPage = ({ isAdmin, onLogout }) => {
+const SettingsPage = ({ isAdmin, onLogout, isDesktop, sidebarIconOnly, onToggleSidebarIconOnly }) => {
   const [autoBackup, setAutoBackup] = useState(false);
   const [backupInterval, setBackupInterval] = useState('weekly');
   const [backupDay, setBackupDay] = useState('sunday');
@@ -241,6 +241,16 @@ const SettingsPage = ({ isAdmin, onLogout }) => {
 
   return (
     <div style={{ width: '100%', height: '100%', backgroundColor: COLORS.gray50, display: 'flex', flexDirection: 'column', fontFamily: 'Apple SD Gothic Neo, sans-serif', overflowY: 'auto' }}>
+
+      {/* 사이드바 */}
+      {isDesktop && (
+        <div style={{ marginTop: '8px' }}>
+          <SectionHeader title="사이드바" />
+          <SettingRow label="아이콘만 보기" noBorder>
+            <Toggle value={!!sidebarIconOnly} onChange={onToggleSidebarIconOnly} />
+          </SettingRow>
+        </div>
+      )}
 
       {/* 데이터 관리 */}
       <div style={{ marginTop: '8px' }}>
