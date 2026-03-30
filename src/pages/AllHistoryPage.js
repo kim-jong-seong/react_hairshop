@@ -463,9 +463,9 @@ const AllHistoryPage = ({ externalFilter }) => {
             return (
               <div key={t.id}>
                 <div
-                  onDoubleClick={() => setEditRecord(t)}
-                  style={{ padding: '14px 16px', cursor: 'default', userSelect: 'none' }}
-                  title="더블클릭으로 수정"
+                  onClick={() => setEditRecord(t)}
+                  style={{ padding: '14px 16px', cursor: 'pointer' }}
+                  title="클릭으로 수정"
                 >
                   <IconRow icon={<Calendar size={14} />}>
                     <span style={{ fontSize: '13px', color: COLORS.gray500, flex: 1 }}>{date} {time}</span>
