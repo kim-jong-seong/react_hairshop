@@ -260,6 +260,9 @@ const DetailSheet = ({ open, customer, onClose, onEdit, onDelete }) => {
   const [services, setServices] = useState([]);
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [editRecord, setEditRecord] = useState(null);
+  const [editSheetOpen, setEditSheetOpen] = useState(false);
+  const openEditSheet = (record) => { setEditRecord(record); setEditSheetOpen(true); };
+  const closeEditSheet = () => { setEditSheetOpen(false); setTimeout(() => setEditRecord(null), 300); };
 
   useEffect(() => {
     if (open) {
@@ -297,14 +300,14 @@ const DetailSheet = ({ open, customer, onClose, onEdit, onDelete }) => {
 
   const handleEditHistory = async (id, body) => {
     await api.put(`/api/history/${id}`, body);
-    setEditRecord(null);
+    closeEditSheet();
     reloadHistory(customer.id);
   };
 
   const handleDeleteHistory = async (id) => {
     if (!window.confirm('이 시술 내역을 삭제하시겠습니까?')) return;
     await api.delete(`/api/history/${id}`);
-    setEditRecord(null);
+    closeEditSheet();
     reloadHistory(customer.id);
   };
 
@@ -373,7 +376,7 @@ const DetailSheet = ({ open, customer, onClose, onEdit, onDelete }) => {
               history.map((h, idx) => {
                 const { date, time } = parseDate(h.created_at);
                 return (
-                  <div key={`${histKey}-${h.id}`} onClick={() => setEditRecord(h)}
+                  <div key={`${histKey}-${h.id}`} onClick={() => openEditSheet(h)}
                     style={{ padding: '14px 20px', borderBottom: `1px solid ${COLORS.gray100}`, cursor: 'pointer', animation: 'fadeSlideUp 0.3s cubic-bezier(0.4,0,0.2,1) both', animationDelay: `${idx * 50}ms` }}>
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '6px' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: COLORS.gray400 }}>
@@ -406,7 +409,7 @@ const DetailSheet = ({ open, customer, onClose, onEdit, onDelete }) => {
         )}
       </div>
       <AddHistorySheet open={isAddOpen} onClose={() => setIsAddOpen(false)} onSubmit={handleAddHistory} services={services} customer={safeCustomer} />
-      <EditHistorySheet open={!!editRecord} onClose={() => setEditRecord(null)} record={editRecord} onSave={handleEditHistory} onDelete={handleDeleteHistory} services={services} />
+      <EditHistorySheet open={editSheetOpen} onClose={closeEditSheet} record={editRecord} onSave={handleEditHistory} onDelete={handleDeleteHistory} services={services} />
     </BottomSheet>
   );
 };

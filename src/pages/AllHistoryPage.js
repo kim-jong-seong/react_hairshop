@@ -342,6 +342,9 @@ const AllHistoryPage = ({ externalFilter }) => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [editRecord, setEditRecord] = useState(null);
+  const [editSheetOpen, setEditSheetOpen] = useState(false);
+  const openEditSheet = (record) => { setEditRecord(record); setEditSheetOpen(true); };
+  const closeEditSheet = () => { setEditSheetOpen(false); setTimeout(() => setEditRecord(null), 300); };
 
   // 검색 필터 (입력 중) - 기본값: 오늘
   const [filters, setFilters] = useState({ term: '', from: todayStr(), to: todayStr(), gender: '' });
@@ -424,7 +427,7 @@ const AllHistoryPage = ({ externalFilter }) => {
   const handleSave = async (id, body) => {
     await api.put(`/api/history/${id}`, body);
     await loadHistory(applied);
-    setEditRecord(null);
+    closeEditSheet();
   };
 
   // 삭제
@@ -432,7 +435,7 @@ const AllHistoryPage = ({ externalFilter }) => {
     if (!window.confirm('이 시술 내역을 삭제하시겠습니까?')) return;
     await api.delete(`/api/history/${id}`);
     await loadHistory(applied);
-    setEditRecord(null);
+    closeEditSheet();
   };
 
   if (loading) {
@@ -463,7 +466,7 @@ const AllHistoryPage = ({ externalFilter }) => {
             return (
               <div key={t.id}>
                 <div
-                  onClick={() => setEditRecord(t)}
+                  onClick={() => openEditSheet(t)}
                   style={{ padding: '14px 16px', cursor: 'pointer' }}
                   title="클릭으로 수정"
                 >
@@ -512,7 +515,7 @@ const AllHistoryPage = ({ externalFilter }) => {
 
       <SearchSheet open={isSearchOpen} onClose={() => setIsSearchOpen(false)} filters={filters} setFilters={setFilters} onSearch={handleSearch} onReset={handleReset} />
       <AddSheet open={isAddOpen} onClose={() => setIsAddOpen(false)} onSubmit={handleAdd} services={services} customers={customers} />
-      <EditSheet open={!!editRecord} onClose={() => setEditRecord(null)} record={editRecord} onSave={handleSave} onDelete={handleDelete} services={services} />
+      <EditSheet open={editSheetOpen} onClose={closeEditSheet} record={editRecord} onSave={handleSave} onDelete={handleDelete} services={services} />
     </div>
   );
 };
