@@ -15,13 +15,17 @@ const firstOfMonthStr = () => {
 };
 
 
-const computeHistoryFilter = (viewType, period) => {
-  const today = new Date().toISOString().slice(0, 10);
+const computeHistoryFilter = (viewType, period, dateFrom, dateTo) => {
+  const clamp = (from, to) => ({
+    term: '',
+    from: dateFrom > from ? dateFrom : from,
+    to: dateTo < to ? dateTo : to,
+    gender: '',
+  });
   if (viewType === 'day') {
     return { term: '', from: period, to: period, gender: '' };
   }
   if (viewType === 'month') {
-    // ISO 형식("2026-03") 또는 한국 형식("2026년 03월") 모두 처리
     let y, m;
     if (period.includes('-')) {
       [y, m] = period.split('-').map(Number);
@@ -31,14 +35,13 @@ const computeHistoryFilter = (viewType, period) => {
     }
     const from = `${y}-${String(m).padStart(2, '0')}-01`;
     const lastDate = new Date(y, m, 0).getDate();
-    const lastDayStr = `${y}-${String(m).padStart(2, '0')}-${String(lastDate).padStart(2, '0')}`;
-    return { term: '', from, to: today < lastDayStr ? today : lastDayStr, gender: '' };
+    const to = `${y}-${String(m).padStart(2, '0')}-${String(lastDate).padStart(2, '0')}`;
+    return clamp(from, to);
   }
-  // year — ISO 형식("2026") 또는 한국 형식("2026년") 모두 처리
   const y = period.replace('년', '').trim();
   const from = `${y}-01-01`;
-  const lastDayStr = `${y}-12-31`;
-  return { term: '', from, to: today < lastDayStr ? today : lastDayStr, gender: '' };
+  const to = `${y}-12-31`;
+  return clamp(from, to);
 };
 
 const SalesPage = ({ onNavigateToHistory }) => {
@@ -144,7 +147,7 @@ const SalesPage = ({ onNavigateToHistory }) => {
             const { main, sub } = formatPeriod(row.period);
             const dayColor = getDayColor(row.period);
             return (
-              <div key={row.period} onClick={() => onNavigateToHistory && onNavigateToHistory(computeHistoryFilter(viewType, row.period))} style={{ display: 'flex', alignItems: 'center', padding: '14px 16px', borderBottom: `1px solid ${COLORS.gray100}`, cursor: onNavigateToHistory ? 'pointer' : 'default' }}>
+              <div key={row.period} onClick={() => onNavigateToHistory && onNavigateToHistory(computeHistoryFilter(viewType, row.period, dateFrom, dateTo))} style={{ display: 'flex', alignItems: 'center', padding: '14px 16px', borderBottom: `1px solid ${COLORS.gray100}`, cursor: onNavigateToHistory ? 'pointer' : 'default' }}>
                 <div style={{ flex: 1 }}>
                   <span style={{ fontSize: '14px', fontWeight: '500', color: dayColor }}>{main}</span>
                   {sub && <span style={{ fontSize: '13px', color: dayColor, marginLeft: '6px', opacity: 0.8 }}>{sub}</span>}
