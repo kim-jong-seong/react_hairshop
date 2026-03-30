@@ -113,7 +113,7 @@ const AddHistorySheet = ({ open, onClose, onSubmit, services, customer }) => {
     const name = isDirect ? form.directName : (selectedService?.name || '');
     if (!name || !form.amount) return;
     const created_at = `${form.date}T${form.time}`;
-    await onSubmit({ service_id: isDirect ? 999 : (form.selectedServiceId || 999), amount: parseAmount(form.amount), memo: form.memo || '', created_at, modified_service_name: isDirect ? form.directName : '' });
+    await onSubmit({ service_id: isDirect ? null : (form.selectedServiceId || null), amount: parseAmount(form.amount), memo: form.memo || '', created_at, modified_service_name: isDirect ? form.directName : '' });
     setForm({ date: todayStr(), time: nowTimeStr(), treatmentMode: 'select', selectedServiceId: null, directName: '', amount: '', memo: '' });
     setIsServiceListOpen(false);
   };
@@ -200,7 +200,7 @@ const EditHistorySheet = ({ open, onClose, record, onSave, onDelete, services })
 
   const handleSave = async () => {
     const created_at = `${form.date}T${form.time}`;
-    const service_id = form.isDirect ? 999 : (form.selectedServiceId || 999);
+    const service_id = form.isDirect ? null : (form.selectedServiceId || null);
     const modified_service_name = form.isDirect ? form.directName : '';
     await onSave(record.id, { service_id, amount: parseAmount(form.amount), memo: form.memo, created_at, modified_service_name });
   };
