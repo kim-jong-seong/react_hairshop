@@ -327,7 +327,7 @@ const DetailSheet = ({ open, customer, onClose, onEdit, onDelete }) => {
             <span style={{ fontSize: '18px', fontWeight: '600', color: COLORS.gray900 }}>{safeCustomer.name}</span>
             {safeCustomer.name && <GenderBadge gender={safeCustomer.gender} />}
           </div>
-          {safeCustomer.phone && <span onClick={() => { if (window.confirm(`${safeCustomer.name}(${safeCustomer.phone})님에게 전화하시겠습니까?`)) window.location.href = `tel:${safeCustomer.phone}`; }} style={{ fontSize: '13px', color: COLORS.gray500, cursor: 'pointer', textDecoration: 'underline' }}>{safeCustomer.phone}</span>}
+          {safeCustomer.phone && <span onClick={() => { if (window.confirm(`${safeCustomer.name}(${safeCustomer.phone})님에게 전화하시겠습니까?`)) window.location.href = `tel:${safeCustomer.phone}`; }} style={{ fontSize: '13px', color: COLORS.gray500, cursor: 'pointer' }}>{safeCustomer.phone}</span>}
         </div>
         <button onClick={onClose} style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '32px', height: '32px', backgroundColor: COLORS.gray100, border: 'none', borderRadius: '50%', cursor: 'pointer', color: COLORS.gray500, flexShrink: 0 }}>
           <X size={16} />
