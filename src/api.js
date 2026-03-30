@@ -18,10 +18,10 @@ export const downloadFile = async (path, filename) => {
   URL.revokeObjectURL(url);
 };
 
-// history created_at 포맷: "YYYY-MM-DDTHH:MM"
-export const parseDate = (created_at) => ({
-  date: created_at ? created_at.slice(0, 10) : '',
-  time: created_at ? created_at.slice(11, 16) : '',
+// history treatment_at 포맷: "YYYY-MM-DDTHH:MM"
+export const parseDate = (treatment_at) => ({
+  date: treatment_at ? treatment_at.slice(0, 10) : '',
+  time: treatment_at ? treatment_at.slice(11, 16) : '',
 });
 
 export const todayStr = () => new Date().toISOString().slice(0, 10);

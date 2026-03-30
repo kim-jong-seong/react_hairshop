@@ -112,8 +112,8 @@ const AddHistorySheet = ({ open, onClose, onSubmit, services, customer }) => {
     const isDirect = form.treatmentMode === 'direct';
     const name = isDirect ? form.directName : (selectedService?.name || '');
     if (!name || !form.amount) return;
-    const created_at = `${form.date}T${form.time}`;
-    await onSubmit({ service_id: isDirect ? null : (form.selectedServiceId || null), amount: parseAmount(form.amount), memo: form.memo || '', created_at, modified_service_name: isDirect ? form.directName : '' });
+    const treatment_at = `${form.date}T${form.time}`;
+    await onSubmit({ service_id: isDirect ? null : (form.selectedServiceId || null), amount: parseAmount(form.amount), memo: form.memo || '', treatment_at, modified_service_name: isDirect ? form.directName : '' });
     setForm({ date: todayStr(), time: nowTimeStr(), treatmentMode: 'select', selectedServiceId: null, directName: '', amount: '', memo: '' });
     setIsServiceListOpen(false);
   };
@@ -178,7 +178,7 @@ const EditHistorySheet = ({ open, onClose, record, onSave, onDelete, services })
 
   useEffect(() => {
     if (record) {
-      const { date, time } = parseDate(record.created_at);
+      const { date, time } = parseDate(record.treatment_at);
       setForm({
         date, time,
         isDirect: !!record.is_direct_input,
@@ -199,10 +199,10 @@ const EditHistorySheet = ({ open, onClose, record, onSave, onDelete, services })
   const handleServiceSelect = (svc) => { set('selectedServiceId', svc.id); set('amount', svc.price.toLocaleString()); };
 
   const handleSave = async () => {
-    const created_at = `${form.date}T${form.time}`;
+    const treatment_at = `${form.date}T${form.time}`;
     const service_id = form.isDirect ? null : (form.selectedServiceId || null);
     const modified_service_name = form.isDirect ? form.directName : '';
-    await onSave(record.id, { service_id, amount: parseAmount(form.amount), memo: form.memo, created_at, modified_service_name });
+    await onSave(record.id, { service_id, amount: parseAmount(form.amount), memo: form.memo, treatment_at, modified_service_name });
   };
 
   return (
@@ -375,7 +375,7 @@ const DetailSheet = ({ open, customer, onClose, onEdit, onDelete }) => {
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '80px', color: COLORS.gray400, fontSize: '14px' }}>시술 이력이 없습니다</div>
             ) : (
               history.map((h, idx) => {
-                const { date, time } = parseDate(h.created_at);
+                const { date, time } = parseDate(h.treatment_at);
                 return (
                   <div key={`${histKey}-${h.id}`} onClick={() => openEditSheet(h)}
                     style={{ padding: '14px 20px', borderBottom: `1px solid ${COLORS.gray100}`, cursor: 'pointer', animation: 'fadeSlideUp 0.3s cubic-bezier(0.4,0,0.2,1) both', animationDelay: `${idx * 50}ms` }}>

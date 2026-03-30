@@ -120,8 +120,8 @@ const AddSheet = ({ open, onClose, onSubmit, services, customers }) => {
     const isDirect = form.treatmentMode === 'direct';
     const name = isDirect ? form.directName : (selectedService?.name || '');
     if (!form.selectedCustomerId || !name || !form.amount) return;
-    const created_at = `${form.date}T${form.time}`;
-    await onSubmit({ customer_id: form.selectedCustomerId, service_id: isDirect ? null : (form.selectedServiceId || null), amount: parseAmount(form.amount), memo: form.memo || '', created_at, modified_service_name: isDirect ? form.directName : '' });
+    const treatment_at = `${form.date}T${form.time}`;
+    await onSubmit({ customer_id: form.selectedCustomerId, service_id: isDirect ? null : (form.selectedServiceId || null), amount: parseAmount(form.amount), memo: form.memo || '', treatment_at, modified_service_name: isDirect ? form.directName : '' });
     setForm({ date: todayStr(), time: nowTimeStr(), selectedCustomerId: null, treatmentMode: 'select', selectedServiceId: null, directName: '', amount: '', memo: '' });
     setIsServiceListOpen(false);
   };
@@ -184,7 +184,7 @@ const EditSheet = ({ open, onClose, record, onSave, onDelete, services }) => {
 
   useEffect(() => {
     if (record) {
-      const { date, time } = parseDate(record.created_at);
+      const { date, time } = parseDate(record.treatment_at);
       setForm({
         date, time,
         isDirect: !!record.is_direct_input,
@@ -206,10 +206,10 @@ const EditSheet = ({ open, onClose, record, onSave, onDelete, services }) => {
   const handleServiceSelect = (svc) => { set('selectedServiceId', svc.id); set('amount', svc.price.toLocaleString()); };
 
   const handleSave = async () => {
-    const created_at = `${form.date}T${form.time}`;
+    const treatment_at = `${form.date}T${form.time}`;
     const service_id = form.isDirect ? null : (form.selectedServiceId || null);
     const modified_service_name = form.isDirect ? form.directName : '';
-    await onSave(record.id, { service_id, amount: parseAmount(form.amount), memo: form.memo, created_at, modified_service_name });
+    await onSave(record.id, { service_id, amount: parseAmount(form.amount), memo: form.memo, treatment_at, modified_service_name });
   };
 
   return (
@@ -417,8 +417,8 @@ const AllHistoryPage = ({ externalFilter, isActive }) => {
     return '전체';
   };
 
-  const handleAdd = async ({ customer_id, service_id, amount, memo, created_at, modified_service_name }) => {
-    await api.post('/api/history', { customer_id, service_id, amount, memo, created_at, modified_service_name });
+  const handleAdd = async ({ customer_id, service_id, amount, memo, treatment_at, modified_service_name }) => {
+    await api.post('/api/history', { customer_id, service_id, amount, memo, treatment_at, modified_service_name });
     await loadHistory(applied);
     setIsAddOpen(false);
   };
@@ -462,7 +462,7 @@ const AllHistoryPage = ({ externalFilter, isActive }) => {
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: COLORS.gray400, fontSize: '15px' }}>내역이 없습니다</div>
         ) : (
           history.map((t, i) => {
-            const { date, time } = parseDate(t.created_at);
+            const { date, time } = parseDate(t.treatment_at);
             return (
               <div key={t.id}>
                 <div
