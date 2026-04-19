@@ -119,7 +119,9 @@ const AddSheet = ({ open, onClose, onSubmit, services, customers }) => {
   const handleSubmit = async () => {
     const isDirect = form.treatmentMode === 'direct';
     const name = isDirect ? form.directName : (selectedService?.name || '');
-    if (!form.selectedCustomerId || !name || !form.amount) return;
+    if (!form.selectedCustomerId) { alert('고객을 선택해주세요.'); return; }
+    if (!name) { alert('시술을 선택하거나 입력해주세요.'); return; }
+    if (!form.amount) { alert('금액을 입력해주세요.'); return; }
     const treatment_at = `${form.date}T${form.time}`;
     await onSubmit({ customer_id: form.selectedCustomerId, service_id: isDirect ? null : (form.selectedServiceId || null), amount: parseAmount(form.amount), memo: form.memo || '', treatment_at, modified_service_name: isDirect ? form.directName : '' });
     setForm({ date: todayStr(), time: nowTimeStr(), selectedCustomerId: null, treatmentMode: 'select', selectedServiceId: null, directName: '', amount: '', memo: '' });
