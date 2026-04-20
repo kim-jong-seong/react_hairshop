@@ -56,6 +56,8 @@ export const GenderToggle = ({ value, onChange }) => (
   </div>
 );
 
+let openSheetCount = 0;
+
 // ── BottomSheet (Portal 기반) ─────────────────────────────────
 // transform 속성이 있는 조상 안에서 position:fixed 가 오동작하는 문제를 해결하기 위해
 // ReactDOM.createPortal 로 document.body 에 직접 렌더링합니다.
@@ -63,6 +65,19 @@ const BottomSheet = ({ open, onClose, title, children, maxHeight = '90vh', heigh
   const [dragY, setDragY] = useState(0);
   const isDragging = useRef(false);
   const startY = useRef(0);
+
+  useEffect(() => {
+    if (open) {
+      openSheetCount++;
+      document.body.style.overflow = 'hidden';
+    }
+    return () => {
+      if (open) {
+        openSheetCount--;
+        if (openSheetCount === 0) document.body.style.overflow = '';
+      }
+    };
+  }, [open]);
 
   useEffect(() => {
     if (!open) setDragY(0);
