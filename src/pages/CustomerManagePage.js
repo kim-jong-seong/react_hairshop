@@ -200,6 +200,9 @@ const EditHistorySheet = ({ open, onClose, record, onSave, onDelete, services })
   const handleServiceSelect = (svc) => { set('selectedServiceId', svc.id); set('amount', svc.price.toLocaleString()); };
 
   const handleSave = async () => {
+    const name = form.isDirect ? form.directName : (selectedService?.name || '');
+    if (!name) { alert('시술을 선택하거나 입력해주세요.'); return; }
+    if (!form.amount) { alert('금액을 입력해주세요.'); return; }
     const treatment_at = `${form.date}T${form.time}`;
     const service_id = form.isDirect ? null : (form.selectedServiceId || null);
     const modified_service_name = form.isDirect ? form.directName : '';
