@@ -65,6 +65,9 @@ const BottomSheet = ({ open, onClose, title, children, maxHeight = '90vh', heigh
   const [dragY, setDragY] = useState(0);
   const isDragging = useRef(false);
   const startY = useRef(0);
+  const dragYRef = useRef(0);
+  const lastY = useRef(0);
+  const lastTime = useRef(0);
 
   useEffect(() => {
     if (open) {
@@ -80,30 +83,37 @@ const BottomSheet = ({ open, onClose, title, children, maxHeight = '90vh', heigh
   }, [open]);
 
   useEffect(() => {
-    if (!open) setDragY(0);
+    if (!open) { setDragY(0); dragYRef.current = 0; }
   }, [open]);
 
   const handlePointerDown = (e) => {
     isDragging.current = true;
     startY.current = e.clientY;
+    lastY.current = e.clientY;
+    lastTime.current = Date.now();
     e.currentTarget.setPointerCapture(e.pointerId);
   };
 
   const handlePointerMove = (e) => {
     if (!isDragging.current) return;
     const delta = e.clientY - startY.current;
-    if (delta > 0) setDragY(delta);
+    if (delta > 0) {
+      dragYRef.current = delta;
+      setDragY(delta);
+    }
+    lastY.current = e.clientY;
+    lastTime.current = Date.now();
   };
 
-  const handlePointerUp = () => {
+  const handlePointerUp = (e) => {
     if (!isDragging.current) return;
     isDragging.current = false;
-    if (dragY > 150) {
-      setDragY(0);
-      onClose();
-    } else {
-      setDragY(0);
-    }
+    const elapsed = Date.now() - lastTime.current;
+    const velocity = elapsed > 0 ? (e.clientY - lastY.current) / elapsed : 0;
+    const shouldClose = dragYRef.current > 150 || velocity > 0.5;
+    dragYRef.current = 0;
+    setDragY(0);
+    if (shouldClose) onClose();
   };
 
   const dragging = dragY > 0;
