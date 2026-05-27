@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { COLORS } from '../constants';
 import { Search, Plus, Phone, Memo, ChevronRight, Scissors, Calendar, X } from '../icons/Icons';
-import BottomSheet, { Label, TextInput, GenderToggle } from '../components/BottomSheet';
+import BottomSheet, { Label, TextInput, GenderToggle, DateInput, TimeInput } from '../components/BottomSheet';
 import { api, parseDate, todayStr, nowTimeStr, fmtAmountInput, parseAmount } from '../api';
 
 const GENDER_COLORS = {
@@ -130,8 +130,8 @@ const AddHistorySheet = ({ open, onClose, onSubmit, services, customer }) => {
           </div>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-          <div><Label text="날짜" /><input type="date" value={form.date} onChange={(e) => set('date', e.target.value)} style={{ width: '100%', padding: '11px 10px', border: `1px solid ${COLORS.gray200}`, borderRadius: '10px', fontSize: '14px', outline: 'none', boxSizing: 'border-box', color: COLORS.gray900 }} /></div>
-          <div><Label text="시간" /><input type="time" value={form.time} onChange={(e) => set('time', e.target.value)} style={{ width: '100%', padding: '11px 10px', border: `1px solid ${COLORS.gray200}`, borderRadius: '10px', fontSize: '14px', outline: 'none', boxSizing: 'border-box', color: COLORS.gray900 }} /></div>
+          <div><Label text="날짜" /><DateInput value={form.date} onChange={(v) => set('date', v)} /></div>
+          <div><Label text="시간" /><TimeInput value={form.time} onChange={(v) => set('time', v)} /></div>
         </div>
         <div>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
@@ -213,8 +213,8 @@ const EditHistorySheet = ({ open, onClose, record, onSave, onDelete, services })
     <BottomSheet open={open} onClose={onClose} title="시술 내역 수정" zIndex={1100}>
       <div style={{ overflowY: 'auto', flex: 1, padding: '0 20px 32px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-          <div><Label text="날짜" /><input type="date" value={form.date || ''} onChange={(e) => set('date', e.target.value)} style={{ width: '100%', padding: '11px 10px', border: `1px solid ${COLORS.gray200}`, borderRadius: '10px', fontSize: '14px', outline: 'none', boxSizing: 'border-box', color: COLORS.gray900 }} /></div>
-          <div><Label text="시간" /><input type="time" value={form.time || ''} onChange={(e) => set('time', e.target.value)} style={{ width: '100%', padding: '11px 10px', border: `1px solid ${COLORS.gray200}`, borderRadius: '10px', fontSize: '14px', outline: 'none', boxSizing: 'border-box', color: COLORS.gray900 }} /></div>
+          <div><Label text="날짜" /><DateInput value={form.date || ''} onChange={(v) => set('date', v)} /></div>
+          <div><Label text="시간" /><TimeInput value={form.time || ''} onChange={(v) => set('time', v)} /></div>
         </div>
         <div>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
