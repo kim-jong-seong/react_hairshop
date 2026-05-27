@@ -11,14 +11,8 @@ export const DateInput = ({ value, onChange }) => {
 
   const monthRef = useRef();
   const dayRef = useRef();
-  const hiddenRef = useRef();
 
   const notify = (ny, nm, nd) => onChange(`${ny}-${nm}-${nd}`);
-
-  const openPicker = () => {
-    if (!hiddenRef.current) return;
-    try { hiddenRef.current.showPicker(); } catch (e) { hiddenRef.current.click(); }
-  };
 
   const fieldStyle = {
     border: 'none', outline: 'none', fontSize: '14px',
@@ -30,7 +24,7 @@ export const DateInput = ({ value, onChange }) => {
     <div style={{
       display: 'flex', alignItems: 'center', width: '100%',
       padding: '11px 10px', border: `1px solid ${COLORS.gray200}`,
-      borderRadius: '10px', boxSizing: 'border-box', position: 'relative',
+      borderRadius: '10px', boxSizing: 'border-box',
     }}>
       <input
         type="text" inputMode="numeric" maxLength={4}
@@ -79,27 +73,23 @@ export const DateInput = ({ value, onChange }) => {
         }}
         style={{ ...fieldStyle, width: '24px' }}
       />
-      <button
-        type="button" onClick={openPicker} tabIndex={-1}
-        style={{
-          marginLeft: 'auto', background: 'none', border: 'none',
-          padding: '0 2px', cursor: 'pointer', color: COLORS.gray400,
-          display: 'flex', alignItems: 'center',
-        }}
-      >
+      <div style={{ marginLeft: 'auto', position: 'relative', width: '28px', height: '28px', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <Calendar size={16} />
-      </button>
-      <input
-        ref={hiddenRef}
-        type="date"
-        value={value || ''}
-        onChange={(e) => onChange(e.target.value)}
-        tabIndex={-1}
-        style={{
-          position: 'absolute', opacity: 0, pointerEvents: 'none',
-          width: '1px', height: '1px', right: 0, bottom: 0,
-        }}
-      />
+        <input
+          type="date"
+          value={value || ''}
+          min="1900-01-01"
+          max="2099-12-31"
+          onChange={(e) => onChange(e.target.value)}
+          onClick={(e) => { try { e.target.showPicker(); } catch (err) {} }}
+          tabIndex={-1}
+          style={{
+            position: 'absolute', top: 0, left: 0,
+            width: '100%', height: '100%',
+            opacity: 0, cursor: 'pointer',
+          }}
+        />
+      </div>
     </div>
   );
 };
@@ -110,14 +100,8 @@ export const TimeInput = ({ value, onChange }) => {
   const min = parts[1] || '';
 
   const minRef = useRef();
-  const hiddenRef = useRef();
 
   const notify = (nh, nm) => onChange(`${nh}:${nm}`);
-
-  const openPicker = () => {
-    if (!hiddenRef.current) return;
-    try { hiddenRef.current.showPicker(); } catch (e) { hiddenRef.current.click(); }
-  };
 
   const fieldStyle = {
     border: 'none', outline: 'none', fontSize: '14px',
@@ -129,7 +113,7 @@ export const TimeInput = ({ value, onChange }) => {
     <div style={{
       display: 'flex', alignItems: 'center', width: '100%',
       padding: '11px 10px', border: `1px solid ${COLORS.gray200}`,
-      borderRadius: '10px', boxSizing: 'border-box', position: 'relative',
+      borderRadius: '10px', boxSizing: 'border-box',
     }}>
       <input
         type="text" inputMode="numeric" maxLength={2}
@@ -165,27 +149,21 @@ export const TimeInput = ({ value, onChange }) => {
         }}
         style={{ ...fieldStyle, width: '24px' }}
       />
-      <button
-        type="button" onClick={openPicker} tabIndex={-1}
-        style={{
-          marginLeft: 'auto', background: 'none', border: 'none',
-          padding: '0 2px', cursor: 'pointer', color: COLORS.gray400,
-          display: 'flex', alignItems: 'center',
-        }}
-      >
+      <div style={{ marginLeft: 'auto', position: 'relative', width: '28px', height: '28px', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <Clock size={16} />
-      </button>
-      <input
-        ref={hiddenRef}
-        type="time"
-        value={value || ''}
-        onChange={(e) => onChange(e.target.value)}
-        tabIndex={-1}
-        style={{
-          position: 'absolute', opacity: 0, pointerEvents: 'none',
-          width: '1px', height: '1px', right: 0, bottom: 0,
-        }}
-      />
+        <input
+          type="time"
+          value={value || ''}
+          onChange={(e) => onChange(e.target.value)}
+          onClick={(e) => { try { e.target.showPicker(); } catch (err) {} }}
+          tabIndex={-1}
+          style={{
+            position: 'absolute', top: 0, left: 0,
+            width: '100%', height: '100%',
+            opacity: 0, cursor: 'pointer',
+          }}
+        />
+      </div>
     </div>
   );
 };
