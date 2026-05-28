@@ -29,6 +29,7 @@ export const DateInput = ({ value, onChange }) => {
       <input
         type="text" inputMode="numeric" maxLength={4}
         value={y} placeholder="YYYY"
+        onFocus={(e) => e.target.select()}
         onChange={(e) => {
           const val = e.target.value.replace(/\D/g, '').slice(0, 4);
           notify(val, m, d);
@@ -40,6 +41,7 @@ export const DateInput = ({ value, onChange }) => {
       <input
         ref={monthRef} type="text" inputMode="numeric" maxLength={2}
         value={m} placeholder="MM"
+        onFocus={(e) => e.target.select()}
         onChange={(e) => {
           const val = e.target.value.replace(/\D/g, '').slice(0, 2);
           notify(y, val, d);
@@ -59,6 +61,7 @@ export const DateInput = ({ value, onChange }) => {
       <input
         ref={dayRef} type="text" inputMode="numeric" maxLength={2}
         value={d} placeholder="DD"
+        onFocus={(e) => e.target.select()}
         onChange={(e) => {
           const val = e.target.value.replace(/\D/g, '').slice(0, 2);
           notify(y, m, val);
@@ -118,6 +121,7 @@ export const TimeInput = ({ value, onChange }) => {
       <input
         type="text" inputMode="numeric" maxLength={2}
         value={h} placeholder="HH"
+        onFocus={(e) => e.target.select()}
         onChange={(e) => {
           const val = e.target.value.replace(/\D/g, '').slice(0, 2);
           notify(val, min);
@@ -136,6 +140,7 @@ export const TimeInput = ({ value, onChange }) => {
       <input
         ref={minRef} type="text" inputMode="numeric" maxLength={2}
         value={min} placeholder="MM"
+        onFocus={(e) => e.target.select()}
         onChange={(e) => {
           const val = e.target.value.replace(/\D/g, '').slice(0, 2);
           notify(h, val);
