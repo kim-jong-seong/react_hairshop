@@ -30,6 +30,10 @@ export const DateInput = ({ value, onChange }) => {
         type="text" inputMode="numeric" maxLength={4}
         value={y} placeholder="YYYY"
         onFocus={(e) => e.target.select()}
+        onKeyDown={(e) => {
+          if (/^\d$/.test(e.key) && e.target.selectionStart === e.target.selectionEnd && y.length >= 4)
+            e.preventDefault();
+        }}
         onChange={(e) => {
           const val = e.target.value.replace(/\D/g, '').slice(0, 4);
           notify(val, m, d);

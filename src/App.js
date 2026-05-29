@@ -115,7 +115,7 @@ const TabApp = ({ isAdmin, onLogout }) => {
             transition: `transform ${CONSTANTS.ANIMATION_DURATION} ${CONSTANTS.ANIMATION_EASING}`,
           }}>
             {PAGE_COMPONENTS.map((Page, id) => (
-              <div key={id} style={{ height: `${100 / N}%`, width: '100%', flexShrink: 0, overflow: 'hidden' }}>
+              <div key={id} inert={activeTab !== id} style={{ height: `${100 / N}%`, width: '100%', flexShrink: 0, overflow: 'hidden' }}>
                 <Page {...getPageProps(id)} />
               </div>
             ))}
@@ -139,7 +139,7 @@ const TabApp = ({ isAdmin, onLogout }) => {
           transition: `transform ${CONSTANTS.ANIMATION_DURATION} ${CONSTANTS.ANIMATION_EASING}`,
         }}>
           {PAGE_COMPONENTS.map((Page, id) => (
-            <div key={id} style={{ width: `${100 / N}%`, height: '100%', flexShrink: 0, overflow: 'hidden' }}>
+            <div key={id} inert={activeTab !== id} style={{ width: `${100 / N}%`, height: '100%', flexShrink: 0, overflow: 'hidden' }}>
               <Page {...getPageProps(id)} />
             </div>
           ))}

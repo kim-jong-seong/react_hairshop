@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { COLORS } from '../constants';
 import { api } from '../api';
+import { DateInput } from '../components/BottomSheet';
 
 const VIEW_TYPES = [
   { key: 'day', label: '일별' },
@@ -109,11 +110,9 @@ const SalesPage = ({ onNavigateToHistory }) => {
 
       {/* 날짜 필터 + 조회 버튼 */}
       <div style={{ flexShrink: 0, padding: '10px 16px', backgroundColor: COLORS.white, borderBottom: `1px solid ${COLORS.gray100}`, display: 'flex', gap: '8px', alignItems: 'center' }}>
-        <input type="date" value={dateFrom} onChange={(e) => setDateFrom(e.target.value)}
-          style={{ flex: 1, padding: '8px 10px', border: `1px solid ${COLORS.gray200}`, borderRadius: '8px', fontSize: '13px', outline: 'none', color: COLORS.gray700, boxSizing: 'border-box' }} />
+        <div style={{ flex: 1 }}><DateInput value={dateFrom} onChange={setDateFrom} /></div>
         <span style={{ fontSize: '13px', color: COLORS.gray400 }}>~</span>
-        <input type="date" value={dateTo} onChange={(e) => setDateTo(e.target.value)}
-          style={{ flex: 1, padding: '8px 10px', border: `1px solid ${COLORS.gray200}`, borderRadius: '8px', fontSize: '13px', outline: 'none', color: COLORS.gray700, boxSizing: 'border-box' }} />
+        <div style={{ flex: 1 }}><DateInput value={dateTo} onChange={setDateTo} /></div>
         <button onClick={handleSearch}
           style={{ padding: '8px 14px', backgroundColor: COLORS.primary, border: 'none', borderRadius: '8px', fontSize: '13px', fontWeight: '600', color: COLORS.white, cursor: 'pointer', flexShrink: 0 }}>
           조회

@@ -6,6 +6,15 @@ import { api, parseDate, todayStr, nowTimeStr, fmtAmountInput, parseAmount } fro
 
 const ICON_COLOR = '#9ca3af';
 
+const GENDER_COLORS = {
+  남: { bg: '#eff6ff', text: '#3b82f6' },
+  여: { bg: '#fdf2f8', text: '#ec4899' },
+};
+const GenderBadge = ({ gender }) => {
+  const c = GENDER_COLORS[gender] || GENDER_COLORS['남'];
+  return <span style={{ fontSize: '12px', fontWeight: '500', color: c.text, backgroundColor: c.bg, padding: '2px 7px', borderRadius: '999px', flexShrink: 0 }}>{gender}</span>;
+};
+
 const IconRow = ({ icon, children }) => (
   <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', marginBottom: '4px' }}>
     <span style={{ display: 'flex', alignItems: 'center', color: ICON_COLOR, flexShrink: 0, paddingTop: '1px' }}>{icon}</span>
@@ -33,10 +42,8 @@ const SearchSheet = ({ open, onClose, filters, setFilters, onSearch, onReset }) 
         <div>
           <Label text="날짜 범위" />
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-            <input type="date" value={filters.from} onChange={(e) => setFilters(f => ({ ...f, from: e.target.value }))}
-              style={{ padding: '11px 10px', border: `1px solid ${COLORS.gray200}`, borderRadius: '10px', fontSize: '14px', outline: 'none', color: COLORS.gray900, boxSizing: 'border-box', width: '100%' }} />
-            <input type="date" value={filters.to} onChange={(e) => setFilters(f => ({ ...f, to: e.target.value }))}
-              style={{ padding: '11px 10px', border: `1px solid ${COLORS.gray200}`, borderRadius: '10px', fontSize: '14px', outline: 'none', color: COLORS.gray900, boxSizing: 'border-box', width: '100%' }} />
+            <DateInput value={filters.from} onChange={(v) => setFilters(f => ({ ...f, from: v }))} />
+            <DateInput value={filters.to} onChange={(v) => setFilters(f => ({ ...f, to: v }))} />
           </div>
           {longRange && (
             <div style={{ marginTop: '8px', padding: '10px 12px', backgroundColor: '#fffbeb', border: '1px solid #fde68a', borderRadius: '8px', fontSize: '13px', color: '#92400e' }}>
@@ -75,9 +82,22 @@ const CustomerSelector = ({ customers, selectedId, onSelect }) => {
     <div>
       <button onClick={() => setOpen(v => !v)}
         style={{ display: 'flex', alignItems: 'center', width: '100%', padding: '11px 14px', border: `1px solid ${COLORS.gray200}`, borderRadius: '10px', backgroundColor: COLORS.white, cursor: 'pointer', boxSizing: 'border-box' }}>
-        <span style={{ flex: 1, fontSize: '15px', color: selectedId ? COLORS.gray900 : COLORS.gray400, textAlign: 'left' }}>
-          {selected ? `${selected.name}${selected.gender ? `  ·  ${selected.gender}` : ''}` : '고객 선택'}
-        </span>
+        {selected ? (
+          <div style={{ flex: 1, textAlign: 'left' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: selected.memo ? '4px' : 0 }}>
+              <span style={{ fontSize: '15px', color: COLORS.gray900 }}>{selected.name}</span>
+              {selected.gender && <GenderBadge gender={selected.gender} />}
+            </div>
+            {selected.memo && (
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '6px' }}>
+                <span style={{ color: COLORS.gray400, display: 'flex', flexShrink: 0, paddingTop: '1px' }}><Memo size={13} /></span>
+                <span style={{ fontSize: '13px', color: COLORS.gray500 }}>{selected.memo}</span>
+              </div>
+            )}
+          </div>
+        ) : (
+          <span style={{ flex: 1, fontSize: '15px', color: COLORS.gray400, textAlign: 'left' }}>고객 선택</span>
+        )}
         <span style={{ color: COLORS.gray400, transform: open ? 'rotate(90deg)' : 'none', transition: 'transform 0.2s', display: 'flex' }}><ChevronRight size={16} /></span>
       </button>
       <div style={{ maxHeight: open ? '300px' : 0, opacity: open ? 1 : 0, overflow: 'hidden', transition: 'max-height 0.3s ease, opacity 0.2s ease', marginTop: open ? '6px' : 0 }}>
@@ -86,15 +106,25 @@ const CustomerSelector = ({ customers, selectedId, onSelect }) => {
             <input type="text" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="이름 또는 전화번호 검색"
               style={{ width: '100%', padding: '8px 10px', border: `1px solid ${COLORS.gray200}`, borderRadius: '8px', fontSize: '14px', outline: 'none', boxSizing: 'border-box', color: COLORS.gray900 }} />
           </div>
-          <div style={{ maxHeight: '180px', overflowY: 'auto' }}>
+          <div style={{ maxHeight: '240px', overflowY: 'auto' }}>
             {filtered.length === 0 ? (
               <div style={{ padding: '14px', textAlign: 'center', fontSize: '14px', color: COLORS.gray400 }}>검색 결과 없음</div>
             ) : filtered.map(c => (
               <button key={c.id} onClick={() => { onSelect(c); setOpen(false); setSearch(''); }}
-                style={{ display: 'flex', alignItems: 'center', width: '100%', padding: '11px 14px', backgroundColor: selectedId === c.id ? COLORS.primaryLight : COLORS.white, border: 'none', borderBottom: `1px solid ${COLORS.gray100}`, cursor: 'pointer', boxSizing: 'border-box' }}>
-                <span style={{ flex: 1, fontSize: '14px', fontWeight: selectedId === c.id ? '600' : '400', color: selectedId === c.id ? COLORS.primaryDark : COLORS.gray900, textAlign: 'left' }}>{c.name}</span>
-                {c.gender && <span style={{ fontSize: '12px', color: COLORS.gray400, marginRight: selectedId === c.id ? '8px' : '0' }}>{c.gender}</span>}
-                {selectedId === c.id && <span style={{ fontSize: '14px', color: COLORS.primary, fontWeight: '700' }}>✓</span>}
+                style={{ display: 'flex', alignItems: 'flex-start', width: '100%', padding: '11px 14px', backgroundColor: selectedId === c.id ? COLORS.primaryLight : COLORS.white, border: 'none', borderBottom: `1px solid ${COLORS.gray100}`, cursor: 'pointer', boxSizing: 'border-box', gap: '8px' }}>
+                <div style={{ flex: 1, textAlign: 'left' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: c.memo ? '4px' : 0 }}>
+                    <span style={{ fontSize: '15px', fontWeight: '500', color: selectedId === c.id ? COLORS.primaryDark : COLORS.gray900 }}>{c.name}</span>
+                    {c.gender && <GenderBadge gender={c.gender} />}
+                  </div>
+                  {c.memo && (
+                    <div style={{ display: 'flex', alignItems: 'flex-start', gap: '6px' }}>
+                      <span style={{ color: COLORS.gray400, display: 'flex', flexShrink: 0, paddingTop: '1px' }}><Memo size={13} /></span>
+                      <span style={{ fontSize: '13px', color: COLORS.gray500 }}>{c.memo}</span>
+                    </div>
+                  )}
+                </div>
+                {selectedId === c.id && <span style={{ fontSize: '14px', color: COLORS.primary, fontWeight: '700', flexShrink: 0 }}>✓</span>}
               </button>
             ))}
           </div>
@@ -218,9 +248,17 @@ const EditSheet = ({ open, onClose, record, onSave, onDelete, services }) => {
       <div style={{ overflowY: 'auto', flex: 1, padding: '0 20px 32px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
         <div>
           <Label text="고객" />
-          <div style={{ padding: '11px 14px', border: `1px solid ${COLORS.gray200}`, borderRadius: '10px', backgroundColor: COLORS.gray50, display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span onClick={() => { if (!record.phone) { alert('등록된 전화번호가 없습니다.'); return; } if (window.confirm(`${record.customer_name}(${record.phone})님에게 전화하시겠습니까?`)) window.location.href = `tel:${record.phone}`; }} style={{ fontSize: '15px', fontWeight: '500', color: COLORS.gray900, cursor: 'pointer' }}>{record.customer_name}</span>
-            {record.gender && <span style={{ fontSize: '13px', color: COLORS.gray400 }}>{record.gender}</span>}
+          <div style={{ padding: '11px 14px', border: `1px solid ${COLORS.gray200}`, borderRadius: '10px', backgroundColor: COLORS.gray50 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: record.customer_memo ? '4px' : 0 }}>
+              <span onClick={() => { if (!record.phone) { alert('등록된 전화번호가 없습니다.'); return; } if (window.confirm(`${record.customer_name}(${record.phone})님에게 전화하시겠습니까?`)) window.location.href = `tel:${record.phone}`; }} style={{ fontSize: '15px', fontWeight: '500', color: COLORS.gray900, cursor: 'pointer' }}>{record.customer_name}</span>
+              {record.gender && <GenderBadge gender={record.gender} />}
+            </div>
+            {record.customer_memo && (
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '6px' }}>
+                <span style={{ color: COLORS.gray400, display: 'flex', flexShrink: 0, paddingTop: '1px' }}><Memo size={13} /></span>
+                <span style={{ fontSize: '13px', color: COLORS.gray500 }}>{record.customer_memo}</span>
+              </div>
+            )}
           </div>
         </div>
 
