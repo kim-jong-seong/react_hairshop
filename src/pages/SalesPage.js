@@ -45,7 +45,7 @@ const computeHistoryFilter = (viewType, period, dateFrom, dateTo) => {
   return clamp(from, to);
 };
 
-const SalesPage = ({ onNavigateToHistory }) => {
+const SalesPage = ({ onNavigateToHistory, isDesktop }) => {
   const [viewType, setViewType] = useState('day');
   const [dateFrom, setDateFrom] = useState(firstOfMonthStr());
   const [dateTo, setDateTo] = useState(todayStr());
@@ -108,13 +108,15 @@ const SalesPage = ({ onNavigateToHistory }) => {
         </div>
       </div>
 
-      {/* 날짜 필터 + 조회 버튼 */}
-      <div style={{ flexShrink: 0, padding: '10px 16px', backgroundColor: COLORS.white, borderBottom: `1px solid ${COLORS.gray100}`, display: 'flex', gap: '8px', alignItems: 'center' }}>
-        <div style={{ flex: 1 }}><DateInput value={dateFrom} onChange={setDateFrom} /></div>
-        <span style={{ fontSize: '13px', color: COLORS.gray400 }}>~</span>
-        <div style={{ flex: 1 }}><DateInput value={dateTo} onChange={setDateTo} /></div>
+      {/* 날짜 필터 + 조회 버튼 — 모바일은 조회 버튼을 아래 줄 전체 폭으로 */}
+      <div style={{ flexShrink: 0, padding: '10px 16px', backgroundColor: COLORS.white, borderBottom: `1px solid ${COLORS.gray100}`, display: 'flex', flexDirection: isDesktop ? 'row' : 'column', gap: '8px', alignItems: isDesktop ? 'center' : 'stretch' }}>
+        <div style={{ flex: isDesktop ? 1 : '0 0 auto', display: 'flex', gap: '8px', alignItems: 'center' }}>
+          <div style={{ flex: 1 }}><DateInput value={dateFrom} onChange={setDateFrom} compact={!isDesktop} /></div>
+          <span style={{ fontSize: '13px', color: COLORS.gray400, flexShrink: 0 }}>~</span>
+          <div style={{ flex: 1 }}><DateInput value={dateTo} onChange={setDateTo} compact={!isDesktop} /></div>
+        </div>
         <button onClick={handleSearch}
-          style={{ padding: '8px 14px', backgroundColor: COLORS.primary, border: 'none', borderRadius: '8px', fontSize: '13px', fontWeight: '600', color: COLORS.white, cursor: 'pointer', flexShrink: 0 }}>
+          style={{ padding: isDesktop ? '8px 14px' : '12px 14px', backgroundColor: COLORS.primary, border: 'none', borderRadius: '8px', fontSize: isDesktop ? '13px' : '14px', fontWeight: '600', color: COLORS.white, cursor: 'pointer', flexShrink: 0, width: isDesktop ? 'auto' : '100%' }}>
           조회
         </button>
       </div>

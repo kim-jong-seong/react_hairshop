@@ -48,7 +48,7 @@ const TabApp = ({ isAdmin, onLogout }) => {
     { externalFilter: historyFilter, isActive: activeTab === 0 },
     { isActive: activeTab === 1 },
     { isActive: activeTab === 2 },
-    { onNavigateToHistory },
+    { onNavigateToHistory, isDesktop },
     { isAdmin, onLogout, isDesktop, sidebarIconOnly, onToggleSidebarIconOnly: handleToggleSidebarIconOnly },
   ], [historyFilter, activeTab, onNavigateToHistory, isAdmin, onLogout, isDesktop, sidebarIconOnly, handleToggleSidebarIconOnly]);
 

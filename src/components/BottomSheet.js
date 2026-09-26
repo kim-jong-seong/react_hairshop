@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { COLORS } from '../constants';
 import { X, Calendar, Clock } from '../icons/Icons';
 
-export const DateInput = ({ value, onChange }) => {
+export const DateInput = ({ value, onChange, compact = false }) => {
   const parts = value ? value.split('-') : ['', '', ''];
   const y = parts[0] || '';
   const m = parts[1] || '';
@@ -23,7 +23,7 @@ export const DateInput = ({ value, onChange }) => {
   return (
     <div style={{
       display: 'flex', alignItems: 'center', width: '100%',
-      padding: '11px 10px', border: `1px solid ${COLORS.gray200}`,
+      padding: compact ? '11px 6px' : '11px 10px', border: `1px solid ${COLORS.gray200}`,
       borderRadius: '10px', boxSizing: 'border-box',
     }}>
       <input
@@ -39,9 +39,9 @@ export const DateInput = ({ value, onChange }) => {
           notify(val, m, d);
           if (val.length === 4) monthRef.current?.focus();
         }}
-        style={{ ...fieldStyle, width: '40px' }}
+        style={{ ...fieldStyle, width: compact ? '38px' : '40px' }}
       />
-      <span style={{ color: COLORS.gray400, margin: '0 2px', userSelect: 'none' }}>-</span>
+      <span style={{ color: COLORS.gray400, margin: compact ? '0 1px' : '0 2px', userSelect: 'none' }}>-</span>
       <input
         ref={monthRef} type="text" inputMode="numeric" maxLength={2}
         value={m} placeholder="MM"
@@ -59,9 +59,9 @@ export const DateInput = ({ value, onChange }) => {
           else if (n > 12) notify(y, '12', d);
           else if (val.length === 1) notify(y, val.padStart(2, '0'), d);
         }}
-        style={{ ...fieldStyle, width: '24px' }}
+        style={{ ...fieldStyle, width: compact ? '22px' : '24px' }}
       />
-      <span style={{ color: COLORS.gray400, margin: '0 2px', userSelect: 'none' }}>-</span>
+      <span style={{ color: COLORS.gray400, margin: compact ? '0 1px' : '0 2px', userSelect: 'none' }}>-</span>
       <input
         ref={dayRef} type="text" inputMode="numeric" maxLength={2}
         value={d} placeholder="DD"
@@ -78,9 +78,9 @@ export const DateInput = ({ value, onChange }) => {
           else if (n > 31) notify(y, m, '31');
           else if (val.length === 1) notify(y, m, val.padStart(2, '0'));
         }}
-        style={{ ...fieldStyle, width: '24px' }}
+        style={{ ...fieldStyle, width: compact ? '22px' : '24px' }}
       />
-      <div style={{ marginLeft: 'auto', position: 'relative', width: '28px', height: '28px', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <div style={{ marginLeft: 'auto', position: 'relative', width: compact ? '24px' : '28px', height: compact ? '24px' : '28px', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <Calendar size={16} />
         <input
           type="date"
