@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { COLORS } from '../constants';
 import { Search, Plus, Phone, Memo, ChevronRight, Scissors, Calendar, X } from '../icons/Icons';
 import BottomSheet, { Label, TextInput, GenderToggle, DateInput, TimeInput } from '../components/BottomSheet';
@@ -426,6 +426,17 @@ const CustomerManagePage = ({ isActive }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [selectedCustomer, setSelectedCustomer] = useState(null);
+  const searchRef = useRef(null);
+
+  // 고객관리 탭으로 진입하면 검색창에 자동 포커스
+  // (비활성 페이지는 inert 상태라 활성화 이후에만 포커스 가능,
+  //  슬라이드 전환이 끝난 뒤 focus 해야 화면이 튀지 않음)
+  useEffect(() => {
+    if (!isActive || loading) return;
+    const t = setTimeout(() => searchRef.current?.focus(), 320);
+    // 탭을 벗어나면 포커스 해제 (모바일 키보드가 남는 것 방지)
+    return () => { clearTimeout(t); searchRef.current?.blur(); };
+  }, [isActive, loading]);
 
   const load = async () => {
     setLoading(true);
@@ -469,7 +480,7 @@ const CustomerManagePage = ({ isActive }) => {
       <div style={{ flexShrink: 0, padding: '12px 16px', backgroundColor: COLORS.white, borderBottom: `1px solid ${COLORS.gray100}` }}>
         <div style={{ position: 'relative' }}>
           <span style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: COLORS.gray400, display: 'flex' }}><Search size={16} /></span>
-          <input type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="이름, 전화번호, 메모 검색"
+          <input ref={searchRef} type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="이름, 전화번호, 메모 검색"
             style={{ width: '100%', padding: '10px 14px 10px 36px', border: `1px solid ${COLORS.gray200}`, borderRadius: '10px', fontSize: '14px', outline: 'none', boxSizing: 'border-box', backgroundColor: COLORS.gray50, color: COLORS.gray900 }} />
         </div>
       </div>
